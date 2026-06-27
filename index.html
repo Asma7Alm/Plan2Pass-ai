@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plan2Pass - Exam Manager</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-50 min-h-screen font-sans">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        function ExamManager() {
+            const [exams, setExams] = React.useState([]);
+            const [newExam, setNewExam] = React.useState({ name: '', date: '', priority: 'Medium' });
+
+            const addExam = () => {
+                if (newExam.name && newExam.date) {
+                    setExams([...exams, { ...newExam, id: Date.now() }]);
+                    setNewExam({ name: '', date: '', priority: 'Medium' });
+                }
+            };
+
+            return (
+                <div class="max-w-4xl mx-auto p-6">
+                    <h1 class="text-3xl font-bold text-slate-800 mb-8">Plan2Pass: Exam Manager</h1>
+                    
+                    {/* Add Exam Form */}
+                    <div class="bg-white p-6 rounded-xl shadow-md mb-8">
+                        <h2 class="text-xl font-semibold mb-4">Add New Exam</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <input 
+                                placeholder="Exam Name (e.g., GATE)" 
+                                class="p-3 border rounded-lg"
+                                value={newExam.name}
+                                onChange={(e) => setNewExam({...newExam, name: e.target.value})}
+                            />
+                            <input 
+                                type="date" 
+                                class="p-3 border rounded-lg"
+                                value={newExam.date}
+                                onChange={(e) => setNewExam({...newExam, date: e.target.value})}
+                            />
+                            <select 
+                                class="p-3 border rounded-lg"
+                                value={newExam.priority}
+                                onChange={(e) => setNewExam({...newExam, priority: e.target.value})}
+                            >
+                                <option>High</option>
+                                <option>Medium</option>
+                                <option>Low</option>
+                            </select>
+                        </div>
+                        <button 
+                            onClick={addExam}
+                            class="mt-4 w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700"
+                        >
+                            Add Exam
+                        </button>
+                    </div>
+
+                    {/* Exam List */}
+                    <div class="space-y-4">
+                        <h2 class="text-xl font-semibold text-slate-700">Your Scheduled Exams</h2>
+                        {exams.length === 0 ? (
+                            <p class="text-slate-500 italic">No exams added yet.</p>
+                        ) : (
+                            exams.map((exam) => (
+                                <div key={exam.id} class="bg-white p-4 rounded-lg shadow border-l-4 border-blue-500 flex justify-between items-center">
+                                    <div>
+                                        <h3 class="font-bold text-lg">{exam.name}</h3>
+                                        <p class="text-slate-600">Date: {exam.date}</p>
+                                    </div>
+                                    <span class={`px-3 py-1 rounded-full text-sm font-bold ${exam.priority === 'High' ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}`}>
+                                        {exam.priority}
+                                    </span>
+                                </div>
+                            ))
+                        )}
+                    </div>
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<ExamManager />);
+    </script>
+</body>
+</html>
